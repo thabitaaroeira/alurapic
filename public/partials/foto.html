@@ -34,7 +34,7 @@
             <label>Grupo</label>
             <select name="grupo" class="form-control" required 
                     ng-controller="GruposController" ng-model="foto.grupo" 
-                    ng-options="grupo._id as (grupo.nome | uppercase) for grupo in grupos">
+                    ng-options="grupo._id as (grupo.nome |  uppercase) for grupo in grupos">
                 <option value="">Escolha um Grupo</option>
             </select>
             <span ng-show="formulario.$submitted && formulario.grupo.$error.required" 
@@ -44,8 +44,8 @@
         <br/>
         <br/>
         <br/>
-        
-        <p>{{foto.descricao | uppercase}}</p>
+
+        <!--<p>{{foto.descricao | uppercase}}</p>-->
 
         <button type="submit" class="btn btn-primary" ng-disabled="formulario.$invalid">
             Salvar

@@ -8,10 +8,56 @@ angular.module('meusServicos', ['ngResource'])
                         update: {
                             method: 'PUT'
                         },
-                        add: {
+                        save: {
                             method: 'POST'
                         }
                     });
 
                 }
-        );
+        )
+        .factory(
+                'cadastroDeFotos',
+                function (recursoFoto, $q) {
+                    var servico = {};
+
+                    servico.cadastrar = function (foto) {
+                        // $q retorna promise
+                        return $q(function (resolve, reject) {
+                            if (foto._id) { // alterar
+                                recursoFoto.update(
+                                        {fotoId: foto._id},
+                                        foto,
+                                        function () {
+                                            resolve({
+                                                mensagem: 'Foto ' + foto.titulo + ' atualizada com sucesso!',
+                                                inclusao: false
+                                            });
+                                        },
+                                        function (erro) {
+                                            console.log(erro);
+                                            reject({
+                                                mensagem: 'Não foi possível alterar a foto ' + foto.titulo});
+                                        });
+
+                            } else { // cadastrar
+                                recursoFoto.save(foto,
+                                        function () {
+                                            resolve({
+                                                mensagem: 'Foto ' + foto.titulo + ' incluída com sucesso!',
+                                                inclusao: true
+                                            });
+                                        },
+                                        function (erro) {
+                                            console.log(erro);
+                                            reject({
+                                                mensagem: 'Não foi possível cadastrar a foto ' + foto.titulo});
+                                        });
+                            }
+
+                            resolve(1);
+                            reject('deu problema');
+                        });
+                    };
+
+                    return servico;
+                });
