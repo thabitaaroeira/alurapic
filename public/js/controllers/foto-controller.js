@@ -19,12 +19,15 @@ angular.module('alurapic').controller('FotoController', function ($scope,
 
     $scope.submeter = function () {
         if ($scope.formulario.$valid) {
+
             cadastroDeFotos.cadastrar($scope.foto)
                     .then(function (dados) {
                         $scope.mensagem = dados.mensagem;
                         if (dados.inclusao) {
                             $scope.foto = {};
                         }
+                        // disparar evento
+//                        $scope.$broadcast('fotoCadastrada');
                     })
                     .catch(function (dados) {
                         $scope.mensagem = dados.mensagem;

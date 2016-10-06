@@ -53,5 +53,32 @@ angular.module('minhasDiretivas', [])
             ddo.template = '<button ng-click="acao(foto)" class="btn btn-danger btn-block">{{nome}}</button>';
 
             return ddo;
-        });
+        })
+
+        .directive('meuFocus', function () {
+            var ddo = {};
+
+            ddo.restrict = 'A';
+
+//            ddo.scope = {
+//                focado: '=' // qualquer alteração q a diretiva faça, o controller fica sabendo
+//            };
+
+            ddo.link = function (scope, element) { // scope da diretiva
+                // observador
+//                scope.$watch('focado', function () {
+//                    if (scope.focado) {
+//                        // jqlite element
+//                        element[0].focus();
+//                        scope.focado = false;
+//                    }
+//                });
+                scope.$on('fotoCadastrada', function () {
+                    element[0].focus();
+                });
+            };
+
+            return ddo;
+        })
+        ;
 
