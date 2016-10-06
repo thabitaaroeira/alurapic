@@ -1,0 +1,29 @@
+Função link
+Diretivas possuem a propriedade link, cuja função nos dá acesso ao elemento do DOM no qual ela foi adicionada na marcação HTML, inclusive ao escopo privado da diretiva. É nela que manipulamos DOM quando necessário.
+Sobre o código seguinte:
+
+// módulo omitido
+.directive('meuFocus', function() {
+        var ddo = {};
+        ddo.restrict = "A";
+        ddo.scope = {
+            focado : '='
+        };
+        ddo.link = function(element, scope) {
+
+        };
+
+        return ddo;
+    });
+Podemos afirmar que:
+
+ Há um erro, porque os parâmetros da função link são posicionais, isto é, a ordem dos parâmetros fazem diferença. O primeiro parâmetro deveria ser o escopo e o segundo o elemento
+ Não há nada de errado com sua declaração
+ Há um erro, porque existem outros parâmetros que a função link recebe que são obrigatórios
+ Há um erro, porque a propriedade link deve fazer parte do scope e não diretamente na diretiva.
+
+
+---
+
+
+Para deixar ainda mais claro, diferente dos parâmetros injetados em um controller, no qual a ordem não importa, a função link possui parâmetros posicionais, como os de costume no mundo JavaScript. Se invertemos a ordem dos parâmetros teremos sérios problemas em nossa diretiva.

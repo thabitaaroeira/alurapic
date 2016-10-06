@@ -1,0 +1,59 @@
+Watchman :)
+Vejamos a seguinte diretiva:
+// módulo omitido
+.directive('meuFocus', function() {
+        var ddo = {};
+        ddo.restrict = "A";
+        ddo.scope = {
+            focado : '='
+        };
+
+        ddo.link = function(scope, element) {
+           // quero observar qualquer mudança em `focado`!
+        };
+
+        return ddo;
+})
+Altere o código anterior para que exiba a mensagem "mudei" toda vez que a propriedade "focado" mudar, seja na diretiva ou pelo controller.
+
+
+---
+
+
+
+Segue a solução, mas vamos filosofar um pouco sobre ela:
+// módulo omitido
+.directive('meuFocus', function() {
+        var ddo = {};
+        ddo.restrict = "A";
+        ddo.scope = {
+            focado : '='
+        };
+
+        ddo.link = function(scope, element) {
+           // quero observar qualquer mudança em `focado`!
+           scope.$watch('focado', function() {
+                  alert('mudei');
+           });
+        };
+
+        return ddo;
+})
+O $watch é mais inteligente ainda, podemos receber o valor atual e o valor antes da mudança como parâmetros:
+
+// módulo omitido
+.directive('meuFocus', function() {
+        var ddo = {};
+        ddo.restrict = "A";
+        ddo.scope = {
+            focado : '='
+        };
+
+        ddo.link = function(scope, element) {
+           // quero observar qualquer mudança em `focado`!
+           scope.$watch('focado', function(novoValor, valorAntigo) {
+                  alert('mudei');
+           });
+        };
+        return ddo;
+})

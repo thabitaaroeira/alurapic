@@ -1,0 +1,54 @@
+A sopa de caracteres: @, & e =
+Opa! Criar diretivas você já sabe, mas será que compreendeu bem a diferença entre @, & e =?
+Faremos uma revisão (mas prepare-se, no final tem uma pergunta "mega blast ultra super":
+
+Usamos @ quando queremos realizar uma cópia do valor passado para a diretiva no HTML para dentro do escopo isolado na diretiva. Essa cópia é sempre um valor em string.
+Usamos & geralmente quando queremos executar dentro de uma diretiva uma função que pertence a um escopo pai, o de um controller.
+Usamos = quando queremos que tanto a diretiva quanto o controller acessem o mesmo dado, isto é, qualquer alteração no escopo privado da diretiva afetará a propriedade do controller e qualquer alteração nesta propriedade no controller afetará a diretiva. Temos aqui uma comunicação bidirecional.
+Agora que você já lembrou dessa "sopa de caracteres" vem a pergunta.
+
+Partindo do pressuposto que já temos o módulo puzzle criado, temos a seguinte diretiva em uso:
+
+<div ng-controller="CharadaController">
+      <minha-charada titulo="{{titulo}}" ></minha-charada>
+</div>
+O controller:
+
+     angular.module('puzzle').controller('CharadaController', function($scope) {
+           $scope.titulo = "Alura";
+     });
+Agora nossa diretiva:
+
+   angular.module('puzzle').directive('minhaCharada', function() {
+       var ddo = {};
+       ddo.restrict = 'E';
+       ddo.scope = {
+            titulo: '@'
+       };
+       ddo.template = '<p>{{titulo}}</p>';
+       return ddo;
+   });
+Qual será o resultado do processamento da diretiva:
+
+<div ng-controller="CharadaController">
+      <minha-charada titulo="{{titulo}}" ></minha-charada>
+</div>
+ Será exibido para o usuário o texto {{titulo}}
+ Nada será exibido, a diretiva não funcionará, dará um erro
+ Será exibido para o usuário o texto Alura
+ Nada será exibido, resultado branco apenas
+
+
+---
+
+
+Todo código é funcional e o que será exibido para o usuário será o texto Alura.
+Vejamos a diretiva em uso:
+
+<div ng-controller="CharadaController">
+    <minha-charada titulo="{{titulo}}" >     
+    </minha-charada>
+</div>
+Veja que usamos uma AE (Angular Expression) como valor do atributo titulo. Angular avaliará primeiro a AE e depois passará seu resultado para a diretiva, que será "Alura". Como nossa diretiva guarda em seu escopo privado a propriedade titulo com o modificador @, está tudo certo, porque ele indica que queremos capturar o que foi passado no HTML como string dentro de nossa diretiva.
+
+Já fizemos isso antes, porém o uso da AE pode tê-lo confundido.

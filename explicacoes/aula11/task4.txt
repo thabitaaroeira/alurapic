@@ -1,0 +1,24 @@
+Manipulação de DOM
+Angular nos blinda de termos que lidar com o DOM, porém ele não tem resposta para tudo e acabamos tendo que manipulá-lo.
+Segue algumas afirmações sobre a manipulação de DOM no Angular:
+
+1) Deve ser feita nos controllers, pois não dificultam sua leitura, muito menos sua testabilidade.
+
+2) Deve ser realizada em diretivas, pois o código que manipula o DOM ficará separado do código de um controller ou de um serviço. Como o controller nem o serviço manipulam DOM, tornam-se mais fáceis de compreender e de testar em seu framework de teste favorito.
+
+3) Angular não permite a manipulação de DOM, já que ele visa nos blindar desta frágil API.
+
+4) Não é possível manipular DOM em controllers do Angular.
+
+Das afirmações acima, podemos afirmar que:
+
+ 2 e 4 são verdadeiras
+ 2 e 3 são falsas
+ Somente 2 é verdadeira
+ 1, 2 e 3 são falsas
+
+
+---
+
+
+Manipulação de DOM deve ser realizada em diretivas, pois o código que manipula DOM ficará separado do código de um controller ou de um serviço. Como o controller nem o serviço manipulam DOM, tornam-se mais fáceis de compreender e de testar em seu framework de teste favorito. Porém, nada impede que o desenvolvedor manipule DOM dentro dos controllers, o Angular não bloqueia isso, apesar de contestável, pela filosofia do framework.

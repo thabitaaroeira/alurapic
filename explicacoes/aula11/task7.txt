@@ -1,0 +1,94 @@
+Colocando em prática Sugerir melhoria
+Está pronto para criar a diretiva que permite focar qualquer elemento da nossa página quando um cadastro de foto for realizado? Lembre-se que você precisará manipular DOM e o local indicado para isso são nas diretivas, não nos controllers. Passos gerais da tarefa:
+1) Você aprendeu que $watch permite executarmos um código toda vez que uma propriedade de algum objeto mudar. Excelente, mas também aprendeu que se houver outra solução que não dependa de watcher, melhor será para o desempenho da sua aplicação. Watchers em si não são o problema, o problema são quando o número deles é exorbitante. Crie a diretiva meuFocus no módulo minhasDiretivas. Ela deve usar scope.on para escutar ao evento fotoCadastrada. Quando evento for disparado, você precisará focar o elemento no qual a diretiva foi atribuída. Ficou com dúvida? A explicação do capítulo pode ajudá-lo, aliás, uma boa oportunidade para fazer uma revisão. Só não esqueça que quem disparará o evento será o serviço CadastroDeFotos através de $rootScope.
+
+2) Com a diretiva meuFocus criada, adicione-a ao botão Voltar da parcial foto.html. Salve uma foto e verifique se o botão Voltar ganha o foco.
+
+
+---
+
+
+
+A nossa nova diretiva, usando já broadcast no lugar de watchers:
+// public/js/directives/minhas-diretivas.js
+
+// código anterior omitido 
+
+    .directive('meuFocus', function() {
+        var ddo = {};
+        ddo.restrict = "A";
+       // não tem mais scope
+        ddo.link = function(scope, element) {
+             scope.$on('fotoCadastrada', function() {
+                 element[0].focus();
+             });
+        };
+
+        return ddo;
+    });
+Alguém precisa disparar o evento que a diretiva está preparada para responder, nada mais justo que nosso servidor CadastroDeFotos:
+
+angular.module('meusServicos', ['ngResource'])
+    .factory('recursoFoto', function($resource) {
+
+        return $resource('/v1/fotos/:fotoId', null, {
+            'update' : { 
+                method: 'PUT'
+            }
+        });
+    })
+    .factory("cadastroDeFotos", function(recursoFoto, $q, $rootScope) {
+
+        // novidade
+        var evento = 'fotoCadastrada';
+
+        var service = {};
+        service.cadastrar = function(foto) {
+            return $q(function(resolve, reject) {
+
+                if(foto._id) {
+                    recursoFoto.update({fotoId: foto._id}, foto, function() {
+
+                        // novidade
+                        $rootScope.$broadcast(evento);
+
+                        resolve({
+                            mensagem: 'Foto ' + foto.titulo + ' atualizada com sucesso',
+                            inclusao: false
+                        });
+                    }, function(erro) {
+                        console.log(erro);
+                        reject({
+                            mensagem: 'Não foi possível atualizar a foto ' + foto.titulo
+                        });
+                    });
+
+                } else {
+                     recursoFoto.save(foto, function() {
+
+                        // novidade
+                        $rootScope.$broadcast(evento);
+
+                        resolve({
+                            mensagem: 'Foto ' + foto.titulo + ' incluída com sucesso',
+                            inclusao: true
+                        });
+                    }, function(erro) {
+                        console.log(erro);
+                        reject({
+                            mensagem: 'Não foi possível incluir a foto ' + foto.titulo
+                        });
+                    });
+                } 
+            });
+        };
+        return service;
+    });
+E claro, precisamos adicionar a diretiva no botão Voltar:
+
+<!-- public/partials/foto.html -->
+<!-- HTML anterior omitido -->
+
+<a href="/" meu-focus class="btn btn-primary">Voltar</a>
+
+<!-- HTML posterior omitido -->
